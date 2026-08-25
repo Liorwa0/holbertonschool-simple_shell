@@ -1,10 +1,30 @@
 #include "shell.h"
 
 /**
- * split_line - Splits a line into tokens using DELIM
- * @line: The input line to parse
+ * read_line - Reads a line of input from standard input
  *
- * Return: Array of string pointers (tokens), or NULL on failure
+ * Return: Pointer to the line buffer, or NULL on EOF/error
+ */
+char *read_line(void)
+{
+	char *line = NULL;
+	size_t bufsize = 0;
+	ssize_t characters;
+
+	characters = getline(&line, &bufsize, stdin);
+	if (characters == -1)
+	{
+		free(line);
+		return (NULL);
+	}
+	return (line);
+}
+
+/**
+ * split_line - Splits a line into tokens using delimiters
+ * @line: The input string to parse
+ *
+ * Return: Null-terminated array of token strings
  */
 char **split_line(char *line)
 {
