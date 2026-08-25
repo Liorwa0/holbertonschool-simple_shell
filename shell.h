@@ -9,14 +9,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
-#define DELIM " \t\r\n\a"
-
 extern char **environ;
 
-/* Function prototypes */
-char *read_line(void);
-char **split_line(char *line);
-int execute_cmd(char **args, char *prog_name);
-void free_args(char **args);
+int _putchar(char c);
 
 #endif /* SHELL_H */
