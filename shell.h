@@ -11,6 +11,8 @@
 
 extern char **environ;
 
-int _putchar(char c);
+char *read_line(void);
+char **split_line(char *line);
+int execute_cmd(char **args, char *prog_name);
 
 #endif /* SHELL_H */
