@@ -1,63 +1,11 @@
 #include "shell.h"
 
 /**
- * read_line - Reads a line of input from standard input
- *
- * Return: Pointer to the allocated line string, or NULL on EOF/error
- */
-char *read_line(void)
-{
-	char *line = NULL;
-	size_t bufsize = 0;
-	ssize_t characters;
-
-	characters = getline(&line, &bufsize, stdin);
-	if (characters == -1)
-	{
-		free(line);
-		return (NULL);
-	}
-	return (line);
-}
-
-/**
- * split_line - Splits a line into tokens (arguments)
- * @line: The input line to parse
- *
- * Return: Null-terminated array of string tokens
- */
-char **split_line(char *line)
-{
-	int bufsize = 64, position = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
-	char *token;
-
-	if (!tokens)
-		return (NULL);
-
-	token = strtok(line, " \t\r\n\a");
-	while (token != NULL)
-	{
-		tokens[position++] = token;
-		if (position >= bufsize)
-		{
-			bufsize += 64;
-			tokens = realloc(tokens, bufsize * sizeof(char *));
-			if (!tokens)
-				return (NULL);
-		}
-		token = strtok(NULL, " \t\r\n\a");
-	}
-	tokens[position] = NULL;
-	return (tokens);
-}
-
-/**
- * execute_cmd - Forks and executes the command
+ * execute_cmd - Forks a child process and executes a command
  * @args: Null-terminated array of arguments
- * @prog_name: Name of the shell executable for error reporting
+ * @prog_name: Name of the shell executable
  *
- * Return: 1 to continue execution
+ * Return: 1 to continue loop
  */
 int execute_cmd(char **args, char *prog_name)
 {
@@ -88,9 +36,9 @@ int execute_cmd(char **args, char *prog_name)
 }
 
 /**
- * main - Entry point for the Simple Shell
- * @ac: Argument count (unused)
- * @av: Argument vector (contains program name)
+ * main - Entry point for the simple shell
+ * @ac: Argument count
+ * @av: Argument vector
  *
  * Return: Always 0
  */
