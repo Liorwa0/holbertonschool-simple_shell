@@ -9,6 +9,8 @@
 #include <sys/wait.h>
 #include <sys/stat.h>
 
+#define DELIM " \t\r\n\a"
+
 extern char **environ;
 
 char *read_line(void);
