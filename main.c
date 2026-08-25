@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * execute_cmd - Forks a child process and executes a command
+ * execute_cmd - Forks a child process and executes a command with arguments
  * @args: Null-terminated array of arguments
  * @prog_name: Name of the shell executable
  *
