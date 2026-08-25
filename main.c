@@ -1,19 +1,71 @@
 #include "shell.h"
 
 /**
- * execute_cmd - Forks and executes a command with arguments
- * @args: Null-terminated array of arguments
- * @prog_name: Name of the shell executable (for errors)
+ * read_line - Reads a line of input from standard input
  *
- * Return: 0 on success, or 1 on error
+ * Return: Pointer to the allocated line string, or NULL on EOF/error
+ */
+char *read_line(void)
+{
+	char *line = NULL;
+	size_t bufsize = 0;
+	ssize_t characters;
+
+	characters = getline(&line, &bufsize, stdin);
+	if (characters == -1)
+	{
+		free(line);
+		return (NULL);
+	}
+	return (line);
+}
+
+/**
+ * split_line - Splits a line into tokens (arguments)
+ * @line: The input line to parse
+ *
+ * Return: Null-terminated array of string tokens
+ */
+char **split_line(char *line)
+{
+	int bufsize = 64, position = 0;
+	char **tokens = malloc(bufsize * sizeof(char *));
+	char *token;
+
+	if (!tokens)
+		return (NULL);
+
+	token = strtok(line, " \t\r\n\a");
+	while (token != NULL)
+	{
+		tokens[position++] = token;
+		if (position >= bufsize)
+		{
+			bufsize += 64;
+			tokens = realloc(tokens, bufsize * sizeof(char *));
+			if (!tokens)
+				return (NULL);
+		}
+		token = strtok(NULL, " \t\r\n\a");
+	}
+	tokens[position] = NULL;
+	return (tokens);
+}
+
+/**
+ * execute_cmd - Forks and executes the command
+ * @args: Null-terminated array of arguments
+ * @prog_name: Name of the shell executable for error reporting
+ *
+ * Return: 1 to continue execution
  */
 int execute_cmd(char **args, char *prog_name)
 {
 	pid_t pid;
 	int status;
 
-	if (args[0] == NULL)
-		return (0);
+	if (!args || !args[0])
+		return (1);
 
 	pid = fork();
 	if (pid == 0)
@@ -21,7 +73,7 @@ int execute_cmd(char **args, char *prog_name)
 		if (execve(args[0], args, environ) == -1)
 		{
 			perror(prog_name);
-			exit(127);
+			exit(1);
 		}
 	}
 	else if (pid < 0)
@@ -30,48 +82,43 @@ int execute_cmd(char **args, char *prog_name)
 	}
 	else
 	{
-		wait(&status);
+		waitpid(pid, &status, 0);
 	}
-
-	return (0);
+	return (1);
 }
 
 /**
- * main - Entry point for the simple UNIX command interpreter
- * @argc: Argument count
- * @argv: Argument vector
+ * main - Entry point for the Simple Shell
+ * @ac: Argument count (unused)
+ * @av: Argument vector (contains program name)
  *
  * Return: Always 0
  */
-int main(int argc, char **argv)
+int main(int ac, char **av)
 {
 	char *line;
 	char **args;
-	int interactive;
-	(void)argc;
-
-	interactive = isatty(STDIN_FILENO);
+	(void)ac;
 
 	while (1)
 	{
-		if (interactive)
-			write(STDOUT_FILENO, "($) ", 4);
+		if (isatty(STDIN_FILENO))
+			write(STDOUT_FILENO, "#cisfun$ ", 9);
 
 		line = read_line();
-		if (line == NULL)
+		if (!line)
 		{
-			if (interactive)
+			if (isatty(STDIN_FILENO))
 				write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
 
 		args = split_line(line);
 		if (args && args[0])
-			execute_cmd(args, argv[0]);
+			execute_cmd(args, av[0]);
 
-		free_args(args);
+		free(args);
 		free(line);
 	}
-
 	return (0);
 }
