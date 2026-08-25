@@ -21,17 +21,18 @@ char *read_line(void)
 }
 
 /**
- * split_line - Splits a line into tokens using delimiters
+ * split_line - Splits a line into tokens (arguments)
  * @line: The input string to parse
  *
- * Return: Null-terminated array of token strings
+ * Return: Null-terminated array of token strings, or NULL on error
  */
 char **split_line(char *line)
 {
 	int bufsize = 64, position = 0;
-	char **tokens = malloc(bufsize * sizeof(char *));
+	char **tokens;
 	char *token;
 
+	tokens = malloc(bufsize * sizeof(char *));
 	if (!tokens)
 		return (NULL);
 
