@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 {
 	char *line;
 	char **args;
-	int interactive, count = 0;
+	int interactive, count = 0, last = 0;
 	(void)argc;
 
 	interactive = isatty(STDIN_FILENO);
@@ -76,11 +76,11 @@ int main(int argc, char **argv)
 
 		args = split_line(line);
 		if (args && args[0])
-			execute_cmd(args, argv[0], count);
+			last = execute_cmd(args, argv[0], count);
 
 		free_args(args);
 		free(line);
 	}
 
-	return (0);
+	return (last);
 }
