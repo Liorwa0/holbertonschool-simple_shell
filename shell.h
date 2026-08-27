@@ -16,7 +16,7 @@ extern char **environ;
 /* Function prototypes */
 char *read_line(void);
 char **split_line(char *line);
-int execute_cmd(char **args, char *prog_name);
+int execute_cmd(char **args, char *prog_name, int count);
 void free_args(char **args);
 char *_getenv(const char *name);
 char *find_path(char *command);

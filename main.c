@@ -7,7 +7,7 @@
  *
  * Return: 0 on success, or 1 on error
  */
-int execute_cmd(char **args, char *prog_name)
+int execute_cmd(char **args, char *prog_name, int count)
 {
 	pid_t pid;
 	int status;
@@ -55,7 +55,7 @@ int main(int argc, char **argv)
 {
 	char *line;
 	char **args;
-	int interactive;
+	int interactive, count = 0;
 	(void)argc;
 
 	interactive = isatty(STDIN_FILENO);
@@ -72,10 +72,11 @@ int main(int argc, char **argv)
 				write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
+		count++;
 
 		args = split_line(line);
 		if (args && args[0])
-			execute_cmd(args, argv[0]);
+			execute_cmd(args, argv[0], count);
 
 		free_args(args);
 		free(line);
