@@ -11,26 +11,34 @@ int execute_cmd(char **args, char *prog_name)
 {
 	pid_t pid;
 	int status;
+	char *cmd_path;
 
 	if (args[0] == NULL)
 		return (0);
+	
+/* Find path */
+	cmd_path = find_path(args[0]);
+	if (cmd_path == NULL)
+	{
+		perror(prog_name);
+		return (127);
+	}
 
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(args[0], args, environ) == -1)
-		{
-			perror(prog_name);
-			exit(127);
-		}
+		execve(cmd_path, args, environ);
+		perror(prog_name);
+		free(cmd_path);
+		_exit(127);
 	}
 	else if (pid < 0)
 	{
-		perror(prog_name);
+		perror(prog_name); free(cmd_path);
 	}
 	else
 	{
-		wait(&status);
+		wait(&status); free(cmd_path);
 	}
 
 	return (0);

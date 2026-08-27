@@ -18,5 +18,7 @@ char *read_line(void);
 char **split_line(char *line);
 int execute_cmd(char **args, char *prog_name);
 void free_args(char **args);
+char *_getenv(const char *name);
+char *find_path(char *command);
 
 #endif /* SHELL_H */
