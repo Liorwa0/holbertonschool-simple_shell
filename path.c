@@ -50,7 +50,7 @@ char *find_path(char *command)
 	while (dir != NULL)
 	{
 		full = malloc(strlen(dir) + strlen(command) + 2);
-		if (full != NULL)
+		if (full == NULL)
 			break;
 		sprintf(full, "%s/%s", dir, command);
 		if (access(full, X_OK) == 0)

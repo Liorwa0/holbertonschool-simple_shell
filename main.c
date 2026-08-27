@@ -20,7 +20,7 @@ int execute_cmd(char **args, char *prog_name)
 	cmd_path = find_path(args[0]);
 	if (cmd_path == NULL)
 	{
-		perror(prog_name);
+		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, args[0]);
 		return (127);
 	}
 
