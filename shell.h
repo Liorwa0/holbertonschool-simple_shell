@@ -20,5 +20,7 @@ int execute_cmd(char **args, char *prog_name, int count);
 void free_args(char **args);
 char *_getenv(const char *name);
 char *find_path(char *command);
+int handle_builtin(char **args, char *line);
+void print_env(void);
 
 #endif /* SHELL_H */
