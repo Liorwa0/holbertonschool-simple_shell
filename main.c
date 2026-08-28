@@ -75,7 +75,7 @@ int main(int argc, char **argv)
 		count++;
 
 		args = split_line(line);
-		if (args && args[0])
+		if (args && args[0] && handle_builtin(args, line) == 0)
 			last = execute_cmd(args, argv[0], count);
 
 		free_args(args);
