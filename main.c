@@ -38,7 +38,10 @@ int execute_cmd(char **args, char *prog_name, int count)
 	}
 	else
 	{
-		wait(&status); free(cmd_path);
+		wait(&status); 
+		free(cmd_path);
+		if (WIFEXITED(status))
+			return (WIFEXITED(status));
 	}
 
 	return (0);
@@ -75,7 +78,7 @@ int main(int argc, char **argv)
 		count++;
 
 		args = split_line(line);
-		if (args && args[0] && handle_builtin(args, line) == 0)
+		if (args && args[0] && handle_builtin(args, line, last) == 0)
 			last = execute_cmd(args, argv[0], count);
 
 		free_args(args);

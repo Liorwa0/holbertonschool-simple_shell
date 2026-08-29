@@ -7,13 +7,13 @@
  *
  * Return: 1 if a built-in was handled, 0 otherwise
  */
-int handle_builtin(char **args, char *line)
+int handle_builtin(char **args, char *line, int last)
 {
 	if (strcmp(args[0], "exit") == 0)
 	{
 		free_args(args);
 		free(line);
-		exit(0);
+		exit(last);
 	}
 
 	if (strcmp(args[0], "env") == 0)
