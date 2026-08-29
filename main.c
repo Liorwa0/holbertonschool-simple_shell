@@ -41,7 +41,7 @@ int execute_cmd(char **args, char *prog_name, int count)
 		wait(&status); 
 		free(cmd_path);
 		if (WIFEXITED(status))
-			return (WIFEXITED(status));
+			return (WEXITSTATUS(status));
 	}
 
 	return (0);
