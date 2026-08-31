@@ -1,7 +1,7 @@
 #include "shell.h"
 
 /**
- * _getenv - Gets the value of an enviornment variable
+ * _getenv - Gets the value of an environment variable
  * @name: Name of the variable, for example "PATH"
  *
  * Return: Pointer to the value inside environ, or NULL if not found
@@ -10,6 +10,9 @@ char *_getenv(const char *name)
 {
 	int i;
 	size_t len;
+
+	if (name == NULL || environ == NULL)
+		return (NULL);
 
 	len = strlen(name);
 	for (i = 0; environ[i] != NULL; i++)
@@ -31,6 +34,9 @@ char *find_path(char *command)
 {
 	char *path, *copy, *dir, *full;
 
+	if (command == NULL)
+		return (NULL);
+
 	if (strchr(command, '/') != NULL)
 	{
 		if (access(command, X_OK) == 0)
@@ -51,7 +57,10 @@ char *find_path(char *command)
 	{
 		full = malloc(strlen(dir) + strlen(command) + 2);
 		if (full == NULL)
-			break;
+		{
+			free(copy);
+			return (NULL);
+		}
 		sprintf(full, "%s/%s", dir, command);
 		if (access(full, X_OK) == 0)
 		{
@@ -59,10 +68,9 @@ char *find_path(char *command)
 			return (full);
 		}
 		free(full);
-			dir = strtok(NULL, ":");
+		dir = strtok(NULL, ":");
 	}
 	free(copy);
 
 	return (NULL);
 }
-
