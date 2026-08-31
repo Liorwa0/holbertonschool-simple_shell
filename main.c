@@ -4,33 +4,45 @@
  * execute_cmd - Forks a child process and executes a command with arguments
  * @args: Null-terminated array of arguments
  * @prog_name: Name of the shell executable
+ * @count: Execution count for error messages
  *
- * Return: 1 to continue loop
+ * Return: Status code of executed command
  */
-int execute_cmd(char **args, char *prog_name)
+int execute_cmd(char **args, char *prog_name, int count)
 {
 	pid_t pid;
 	int status;
+	char *cmd_path;
 
-	if (!args || !args[0])
-		return (1);
+	if (args[0] == NULL)
+		return (0);
+
+	cmd_path = find_path(args[0]);
+	if (cmd_path == NULL)
+	{
+		fprintf(stderr, "%s: %d: %s: not found\n", prog_name, count, args[0]);
+		return (127);
+	}
 
 	pid = fork();
 	if (pid == 0)
 	{
-		if (execve(args[0], args, environ) == -1)
-		{
-			perror(prog_name);
-			exit(1);
-		}
+		execve(cmd_path, args, environ);
+		perror(prog_name);
+		free(cmd_path);
+		_exit(127);
 	}
 	else if (pid < 0)
 	{
 		perror(prog_name);
+		free(cmd_path);
 	}
 	else
 	{
-		waitpid(pid, &status, 0);
+		wait(&status);
+		free(cmd_path);
+		if (WIFEXITED(status))
+			return (WEXITSTATUS(status));
 	}
 	return (1);
 }
@@ -40,12 +52,14 @@ int execute_cmd(char **args, char *prog_name)
  * @ac: Argument count
  * @av: Argument vector
  *
- * Return: Always 0
+ * Return: Exit status of the last executed command
  */
 int main(int ac, char **av)
 {
 	char *line;
 	char **args;
+	int count = 0, last = 0;
+
 	(void)ac;
 
 	while (1)
@@ -60,13 +74,15 @@ int main(int ac, char **av)
 				write(STDOUT_FILENO, "\n", 1);
 			break;
 		}
+		count++;
 
 		args = split_line(line);
-		if (args && args[0])
-			execute_cmd(args, av[0]);
+		if (args && args[0] && handle_builtin(args, line, last) == 0)
+			last = execute_cmd(args, av[0], count);
 
 		free(args);
 		free(line);
 	}
-	return (0);
+
+	return (last);
 }
