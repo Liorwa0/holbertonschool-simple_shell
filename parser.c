@@ -29,7 +29,7 @@ char *read_line(void)
 char **split_line(char *line)
 {
 	int bufsize = 64, position = 0;
-	char **tokens;
+	char **tokens, **temp;
 	char *token;
 
 	tokens = malloc(bufsize * sizeof(char *));
@@ -39,13 +39,23 @@ char **split_line(char *line)
 	token = strtok(line, DELIM);
 	while (token != NULL)
 	{
-		tokens[position++] = token;
+		tokens[position] = strdup(token);
+		if (!tokens[position])
+		{
+			free_args(tokens);
+			return (NULL);
+		}
+		position++;
 		if (position >= bufsize)
 		{
 			bufsize += 64;
-			tokens = realloc(tokens, bufsize * sizeof(char *));
-			if (!tokens)
+			temp = realloc(tokens, bufsize * sizeof(char *));
+			if (!temp)
+			{
+				free_args(tokens);
 				return (NULL);
+			}
+			tokens = temp;
 		}
 		token = strtok(NULL, DELIM);
 	}
