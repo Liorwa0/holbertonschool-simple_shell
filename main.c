@@ -80,7 +80,7 @@ int main(int ac, char **av)
 		if (args && args[0] && handle_builtin(args, line, last) == 0)
 			last = execute_cmd(args, av[0], count);
 
-		free(args);
+		free_args(args);
 		free(line);
 	}
 
