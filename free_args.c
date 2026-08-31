@@ -1,5 +1,4 @@
-cat << 'EOF' > free_args.c
-#include "shell.h"
+echo '#include "shell.h"
 
 /**
  * free_args - Frees an array of strings
@@ -18,5 +17,4 @@ void free_args(char **args)
 		i++;
 	}
 	free(args);
-}
-EOF
+}' > free_args.c
