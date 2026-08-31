@@ -31,4 +31,6 @@ Prints the current environment variables.
 Upon successful execution of a command, \fBhsh\fR returns the exit status of the last command executed. If an error occurs, an error message is printed to standard error and a non-zero exit status is returned.
 
 .SH AUTHORS
-Written by Arwa Al-Humrani & Partner.
+Arwa Ahmed Alhamrani
+.br
+Renad Fouad Albatati
